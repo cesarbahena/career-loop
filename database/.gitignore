@@ -1,0 +1,6 @@
+# Ignore everything in this directory...
+*
+
+# ...except for the initial schema file and this file.
+!init.sql
+!.gitignore
