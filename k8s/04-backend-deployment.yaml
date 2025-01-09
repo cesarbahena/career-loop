@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: career-loop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          # The image name is a placeholder and will be replaced by our CI/CD pipeline
+          image: career-loop-backend:latest
+          imagePullPolicy: IfNotPresent # Important for local development with k3s
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DATABASE_URL
+              value: "postgresql://admin:password@postgres-service:5432/career_loop_db"
+            # Add other environment variables as needed

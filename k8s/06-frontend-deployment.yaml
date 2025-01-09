@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  namespace: career-loop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          # The image name is a placeholder and will be replaced by our CI/CD pipeline
+          image: career-loop-frontend:latest
+          imagePullPolicy: IfNotPresent # Important for local development with k3s
+          ports:
+            - containerPort: 3000
+          env:
+            # The frontend needs to know where the backend API is.
+            # This will be proxied by the Ingress, so it can be a relative path.
+            - name: API_URL
+              value: "/api" 
