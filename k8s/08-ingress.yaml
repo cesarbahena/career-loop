@@ -4,21 +4,21 @@ metadata:
   name: career-loop-ingress
   namespace: career-loop
   annotations:
-    # This annotation is important for some Ingress controllers to rewrite the path
     nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true" # Enable regex for path matching
 spec:
   rules:
     - http:
         paths:
           - path: /api(/|$)(.*)
-            pathType: Prefix
+            pathType: ImplementationSpecific # Use ImplementationSpecific for regex paths
             backend:
               service:
                 name: backend-service
                 port:
                   number: 8000
           - path: /()(.*)
-            pathType: Prefix
+            pathType: ImplementationSpecific # Use ImplementationSpecific for regex paths
             backend:
               service:
                 name: frontend-service
