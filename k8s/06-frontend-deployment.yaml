@@ -26,7 +26,7 @@ spec:
         fsGroup: 1001
       containers:
         - name: frontend
-          image: career-loop-frontend:v1.0.0
+          image: career-loop-frontend:v1.0.1
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
@@ -34,11 +34,24 @@ spec:
               protocol: TCP
           env:
             - name: NODE_ENV
-              value: "production"
+              valueFrom:
+                configMapKeyRef:
+                  name: frontend-config
+                  key: NODE_ENV
             - name: HOST
               value: "0.0.0.0"
             - name: PORT
               value: "3000"
+            - name: DATABASE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: frontend-config
+                  key: DATABASE_HOST
+            - name: DATABASE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: frontend-config
+                  key: DATABASE_PORT
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
