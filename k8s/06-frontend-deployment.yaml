@@ -3,6 +3,10 @@ kind: Deployment
 metadata:
   name: frontend-deployment
   namespace: career-loop
+  labels:
+    app: frontend
+    component: web
+    part-of: career-loop
 spec:
   replicas: 1
   selector:
@@ -12,16 +16,56 @@ spec:
     metadata:
       labels:
         app: frontend
+        component: web
+        part-of: career-loop
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
       containers:
         - name: frontend
-          # The image name is a placeholder and will be replaced by our CI/CD pipeline
-          image: career-loop-frontend:latest
-          imagePullPolicy: IfNotPresent # Important for local development with k3s
+          image: career-loop-frontend:v1.0.0
+          imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 3000
+            - name: http
+              containerPort: 3000
+              protocol: TCP
           env:
-            # The frontend needs to know where the backend API is.
-            # This will be proxied by the Ingress, so it can be a relative path.
-            - name: API_URL
-              value: "/api" 
+            - name: NODE_ENV
+              value: "production"
+            - name: HOST
+              value: "0.0.0.0"
+            - name: PORT
+              value: "3000"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: frontend-secret
+                  key: DATABASE_URL
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3 
