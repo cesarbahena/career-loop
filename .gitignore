@@ -4,6 +4,8 @@
 *.swo
 .idea/
 .vscode/
+AGENTS.md
+*.har
 
 # Python
 __pycache__/
@@ -32,7 +34,6 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-# Sub-repositories (each is its own git repo)
-/frontend/
-/backend/
+# Sub-projects
+/web/
 /services/
