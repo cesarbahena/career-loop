@@ -1,4 +1,4 @@
-import ApplicationsList from './components/ApplicationsList';
+import ApplicationsList from '@/components/ApplicationsList';
 
 export default function Home() {
   return (
